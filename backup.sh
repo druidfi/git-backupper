@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 GH_CLI_TOKEN=${GH_CLI_TOKEN-""}
 GH_OWNER=${GH_OWNER-"octocat"}
 GH_LIST_LIMIT=${GH_LIST_LIMIT-100}
