@@ -50,6 +50,6 @@ for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
     gh repo clone ${WIKI_REPO} backups/$(_jq '.name')/wiki -- ${GIT_CLONE_FLAGS} 2>/dev/null || echo "- No wiki found..."
 
     echo "- Create archive..."
-    run compress backups/$(_jq '.name') ${BACKUP_DIR}/
+    compress backups/$(_jq '.name') ${BACKUP_DIR}/
 
 done

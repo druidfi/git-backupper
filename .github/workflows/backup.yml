@@ -1,0 +1,19 @@
+name: Backup
+
+on:
+  push:
+
+jobs:
+
+  backup:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Backup repositories from GitHub
+        run: ./backup.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_OWNER: ${{ secrets.GH_OWNER }}
+          GH_LIST_LIMIT: 5
