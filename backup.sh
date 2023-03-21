@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -eu
 
 GH_CLI_TOKEN=${GH_CLI_TOKEN-""}
 GH_OWNER=${GH_OWNER-"octocat"}
@@ -9,6 +9,7 @@ GIT_CLONE_FLAGS="--quiet --mirror"
 
 if [[ -n $GH_CLI_TOKEN ]]
 then
+  echo "Authenticate with GH_CLI_TOKEN"
   echo "$GH_CLI_TOKEN" | gh auth login --with-token
 fi
 
