@@ -1,8 +1,14 @@
 #!/bin/bash
 
+GH_CLI_TOKEN=${GH_CLI_TOKEN-""}
 GH_OWNER=${GH_OWNER-"octocat"}
 GH_LIST_LIMIT=${GH_LIST_LIMIT-100}
 GIT_CLONE_FLAGS="--quiet --mirror"
+
+if [[ -n $GH_CLI_TOKEN ]]
+then
+  echo "$GH_CLI_TOKEN" | gh auth login --with-token
+fi
 
 # The function `run` will exit the script if the given command fails.
 function run {
@@ -21,6 +27,8 @@ function run {
 function compress {
    run tar zcf $1.tar.gz $2 && run rm -rf $2
 }
+
+
 
 REPOS=`run gh repo list ${GH_OWNER} --json name,nameWithOwner,sshUrl --limit ${GH_LIST_LIMIT}`
 

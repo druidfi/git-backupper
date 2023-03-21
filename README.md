@@ -25,7 +25,8 @@ GH_OWNER=myorg ./backup.sh
 
 ## Environment variables
 
-| Name          | Value   |
-|---------------|---------|
-| GH_OWNER      | octocat |
-| GH_LIST_LIMIT | 100     |
+| Name          | Value   | Description                     |
+|---------------|---------|---------------------------------|
+| GH_CLI_TOKEN  |         | Specific token to use           |
+| GH_OWNER      | octocat | GitHub organization             |
+| GH_LIST_LIMIT | 100     | How many repositories to backup |
