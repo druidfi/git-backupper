@@ -12,7 +12,7 @@ jobs:
     steps:
 
       - name: Backup repositories from GitHub
-        run: ./backup.sh
+        run: ${GITHUB_WORKSPACE}/backup.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_OWNER: ${{ secrets.GH_OWNER }}
