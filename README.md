@@ -12,6 +12,7 @@ Syncs backups to S3 bucket
 ## Requirements
 
 - Github CLI
+- jq
 - AWS credentials for S3 sync
 
 ## Usage

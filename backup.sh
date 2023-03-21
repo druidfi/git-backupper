@@ -17,9 +17,9 @@ function run {
   fi
 }
 
-# The function `tgz` will create a gzipped tar archive of the specified file ($1) and then remove the original
-function tgz {
-   run tar zcf $1.tar.gz $1 && run rm -rf $1
+# The function `compress` will create a gzipped tar archive of the specified file ($1) and then remove the original
+function compress {
+   run tar zcf $1.tar.gz $2 && run rm -rf $2
 }
 
 REPOS=`run gh repo list ${GH_OWNER} --json name,nameWithOwner,sshUrl --limit ${GH_LIST_LIMIT}`
@@ -29,16 +29,27 @@ for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
       echo ${row} | base64 --decode | jq -r ${1}
     }
 
+    echo "Backup repository $(_jq '.nameWithOwner')"
+
     REPO=git@github.com:$(_jq '.nameWithOwner').git
     WIKI_REPO=git@github.com:$(_jq '.nameWithOwner').wiki.git
+    BACKUP_DIR=backups/$(_jq '.name')
+    ISSUE_JSON=backups/$(_jq '.name')/issues.json
 
-    echo Cloning $(_jq '.nameWithOwner')...
-    #run gh repo clone ${REPO} backups/$(_jq '.name') -- ${GIT_CLONE_FLAGS} && tgz backups/$(_jq '.name')
+    mkdir -p ${BACKUP_DIR}
 
-    echo Download issues for $(_jq '.nameWithOwner')...
-    run gh api repos/$(_jq '.nameWithOwner')/issues > backups/$(_jq '.name')-issues.json
+    echo "- Cloning repository..."
+    run gh repo clone ${REPO} ${BACKUP_DIR}/repository -- ${GIT_CLONE_FLAGS}
 
-    echo Cloning $(_jq '.nameWithOwner') wiki...
-    #gh repo clone ${WIKI_REPO} backups/$(_jq '.name')-wiki -- ${GIT_CLONE_FLAGS} 2>/dev/null && tgz backups/$(_jq '.name')-wiki || echo "No wiki..."
+    echo "- Download issues as JSON..."
+    run gh api repos/$(_jq '.nameWithOwner')/issues --paginate | jq . > ${ISSUE_JSON}
+    ISSUE_COUNT=$(jq '. | length' ${ISSUE_JSON})
+    if [ ${ISSUE_COUNT} -eq 0 ] ; then rm ${ISSUE_JSON} ; else echo "- found ${ISSUE_COUNT} issues" ; fi
+
+    echo "- Cloning wiki..."
+    gh repo clone ${WIKI_REPO} backups/$(_jq '.name')/wiki -- ${GIT_CLONE_FLAGS} 2>/dev/null || echo "- No wiki found..."
+
+    echo "- Create archive..."
+    run compress backups/$(_jq '.name') ${BACKUP_DIR}/
 
 done
