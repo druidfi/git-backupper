@@ -1,0 +1,35 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/build-docker-image.yml'
+      - '.dockerignore'
+      - 'Dockerfile'
+      - '**.sh'
+
+name: Build Docker image
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          file: app.Dockerfile
+          tags: ghcr.io/druidfi/git-backupper:latest
