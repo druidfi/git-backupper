@@ -17,7 +17,7 @@ jobs:
       - name: Backup repositories from GitHub
         run: ${GITHUB_WORKSPACE}/backup.sh
         env:
-          #GITHUB_TOKEN: ${{ secrets.GH_CLI_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_CLI_TOKEN }}
           GH_CLI_TOKEN: ${{ secrets.GH_CLI_TOKEN }}
           GH_OWNER: ${{ secrets.GH_OWNER }}
           GH_LIST_LIMIT: 5
