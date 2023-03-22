@@ -3,6 +3,7 @@ name: Backup
 on:
   schedule:
     - cron:  '0 0 * * *' # UTC == 2 AM EET
+  workflow_dispatch:
 
 jobs:
 
