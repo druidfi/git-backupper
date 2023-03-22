@@ -14,14 +14,18 @@ Backup organization's GitHub repositories with Github CLI.
 - jq
 - awscli
 
-Note: all these are pre-installed on Github Action runners.
+Note: all these are pre-installed on Github Action runners and in Docker image (see below).
 
 ## Usage
 
-This script can be used with e.g. CI workflow, Docker container or as it is:
+These scripts can be used with e.g. CI workflow, Docker container or as it is:
 
 ```shell
 GH_OWNER=myorg GH_LIST_LIMIT=5 ./backup.sh
+```
+
+```shell
+S3_BUCKET=mybucket AWS_ACCESS_KEY_ID=mykey AWS_SECRET_ACCESS_KEY=mysecret ./s3.sh
 ```
 
 See [Github workflow](.github/workflows/backup.yml) to see how to use with Github Actions workflow.
@@ -62,6 +66,4 @@ docker run -ti --rm -e GH_TOKEN=YOUR_PAT -e GH_OWNER=myorg -e GH_LIST_LIMIT=5 -v
 
 ## TODO
 
-- S3 sync script
-- S3 workflow running that script
 - Possibility to backup custom repositories
