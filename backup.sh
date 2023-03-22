@@ -2,24 +2,13 @@
 
 set -eu
 
+source utils.sh
+
 GH_CLI_TOKEN=${GH_CLI_TOKEN-""}
 GH_OWNER=${GH_OWNER-"octocat"}
 GH_LIST_LIMIT=${GH_LIST_LIMIT-100}
 GIT_CLONE_MODE=${GIT_CLONE_MODE-"ssh"}
 GIT_CLONE_FLAGS="--quiet --mirror"
-
-# The function `run` will exit the script if the given command fails.
-function run {
-  "$@"
-  status=$?
-  if [ $status -ne 0 ]; then
-    echo "ERROR: Encountered error (${status}) while running the following:" >&2
-    echo "           $@"  >&2
-    echo "       (at line ${BASH_LINENO[0]} of file $0.)"  >&2
-    echo "       Aborting." >&2
-    exit $status
-  fi
-}
 
 # The function `compress` will create a gzipped tar archive of the specified file ($1) and then remove the original
 function compress {
@@ -33,7 +22,7 @@ for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
       echo ${row} | base64 --decode | jq -r ${1}
     }
 
-    echo "Backup repository $(_jq '.nameWithOwner')"
+    info "Backup repository $(_jq '.nameWithOwner')"
 
     if [ "${GIT_CLONE_MODE}" == "https" ] ; then
       REPO=https://github.com/$(_jq '.nameWithOwner').git
@@ -47,18 +36,20 @@ for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
 
     mkdir -p ${BACKUP_DIR}
 
-    echo "- Cloning repository (${GIT_CLONE_MODE})..."
+    info "- Cloning repository (${GIT_CLONE_MODE})..."
     run gh repo clone ${REPO} ${BACKUP_DIR}/repository -- ${GIT_CLONE_FLAGS}
 
-    echo "- Download issues as JSON..."
+    info "- Download issues as JSON..."
     run gh api repos/$(_jq '.nameWithOwner')/issues --paginate | jq . > ${ISSUE_JSON}
     ISSUE_COUNT=$(jq '. | length' ${ISSUE_JSON})
-    if [ ${ISSUE_COUNT} -eq 0 ] ; then rm ${ISSUE_JSON} ; else echo "- found ${ISSUE_COUNT} issues" ; fi
+    if [ ${ISSUE_COUNT} -eq 0 ] ; then rm ${ISSUE_JSON} ; else info "- found ${ISSUE_COUNT} issues" ; fi
 
-    echo "- Cloning wiki..."
-    gh repo clone ${WIKI_REPO} backups/$(_jq '.name')/wiki -- ${GIT_CLONE_FLAGS} 2>/dev/null || echo "- No wiki found..."
+    info "- Cloning wiki..."
+    gh repo clone ${WIKI_REPO} backups/$(_jq '.name')/wiki -- ${GIT_CLONE_FLAGS} 2>/dev/null || info "- No wiki found..."
 
-    echo "- Create archive..."
+    info "- Create archive..."
     compress backups/$(_jq '.name') ${BACKUP_DIR}/
 
 done
+
+success "Success! All repositories backupped."
