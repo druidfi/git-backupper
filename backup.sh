@@ -5,10 +5,8 @@ set -eu
 GH_CLI_TOKEN=${GH_CLI_TOKEN-""}
 GH_OWNER=${GH_OWNER-"octocat"}
 GH_LIST_LIMIT=${GH_LIST_LIMIT-100}
+GIT_CLONE_MODE=${GIT_CLONE_MODE-"ssh"}
 GIT_CLONE_FLAGS="--quiet --mirror"
-
-#echo "Check gh status with GITHUB_TOKEN"
-#gh auth status
 
 # The function `run` will exit the script if the given command fails.
 function run {
@@ -28,13 +26,13 @@ function compress {
    run tar zcf $1.tar.gz $2 && run rm -rf $2
 }
 
-if [[ -n $GH_CLI_TOKEN ]]
-then
-  echo "Authenticate with GH_CLI_TOKEN"
-  echo "$GH_CLI_TOKEN" | run gh auth login --with-token
-  echo "Check gh status with GH_CLI_TOKEN"
-  gh auth status
-fi
+#if [[ -n $GH_CLI_TOKEN ]]
+#then
+#  echo "Authenticate with GH_CLI_TOKEN"
+#  echo "$GH_CLI_TOKEN" | run gh auth login --with-token
+#  echo "Check gh status with GH_CLI_TOKEN"
+#  gh auth status
+#fi
 
 REPOS=`run gh repo list ${GH_OWNER} --json name,nameWithOwner,sshUrl --limit ${GH_LIST_LIMIT}`
 
@@ -45,15 +43,19 @@ for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
 
     echo "Backup repository $(_jq '.nameWithOwner')"
 
-    #REPO=git@github.com:$(_jq '.nameWithOwner').git
-    REPO=https://github.com/$(_jq '.nameWithOwner').git
+    if [ "${GIT_CLONE_MODE}" == "https" ] ; then
+      REPO=https://github.com/$(_jq '.nameWithOwner').git
+    else
+      REPO=git@github.com:$(_jq '.nameWithOwner').git
+    fi
+
     WIKI_REPO=git@github.com:$(_jq '.nameWithOwner').wiki.git
     BACKUP_DIR=backups/$(_jq '.name')
     ISSUE_JSON=backups/$(_jq '.name')/issues.json
 
     mkdir -p ${BACKUP_DIR}
 
-    echo "- Cloning repository..."
+    echo "- Cloning repository (${GIT_CLONE_MODE})..."
     run gh repo clone ${REPO} ${BACKUP_DIR}/repository -- ${GIT_CLONE_FLAGS}
 
     echo "- Download issues as JSON..."
