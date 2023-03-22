@@ -1,7 +1,6 @@
 name: Backup
 
 on:
-  push:
   schedule:
     - cron:  '0 0 * * *' # UTC == 2 AM EET
 

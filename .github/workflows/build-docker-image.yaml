@@ -31,5 +31,5 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          file: app.Dockerfile
+          file: Dockerfile
           tags: ghcr.io/druidfi/git-backupper:latest
