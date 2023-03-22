@@ -52,16 +52,17 @@ For `s3.sh`:
 
 ## Docker image
 
+Use prebuild image:
+
+```shell
+docker run -ti --rm -e GH_TOKEN=YOUR_PAT -e GH_OWNER=myorg -e GH_LIST_LIMIT=5 \
+  -v `pwd`/backups:/app/backups ghcr.io/druidfi/git-backupper
+```
+
 Build image as `git-backupper:latest`:
 
 ```shell
 docker build . --progress plain -t git-backupper
-```
-
-Run image:
-
-```shell
-docker run -ti --rm -e GH_TOKEN=YOUR_PAT -e GH_OWNER=myorg -e GH_LIST_LIMIT=5 -v `pwd`/backups:/app/backups git-backupper
 ```
 
 ## TODO
