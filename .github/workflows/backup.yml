@@ -30,7 +30,7 @@ jobs:
 
       - uses: actions/cache/save@v3
         with:
-          path: ${GITHUB_WORKSPACE}/backups/*
+          path: ${GITHUB_WORKSPACE}/backups
           key: backups
 
   sync:
@@ -45,7 +45,7 @@ jobs:
 
       - uses: actions/cache/restore@v3
         with:
-          path: ${GITHUB_WORKSPACE}/backups/*
+          path: ${GITHUB_WORKSPACE}/backups
           key: backups
           fail-on-cache-miss: true
 
