@@ -26,14 +26,6 @@ function compress {
    run tar zcf $1.tar.gz $2 && run rm -rf $2
 }
 
-#if [[ -n $GH_CLI_TOKEN ]]
-#then
-#  echo "Authenticate with GH_CLI_TOKEN"
-#  echo "$GH_CLI_TOKEN" | run gh auth login --with-token
-#  echo "Check gh status with GH_CLI_TOKEN"
-#  gh auth status
-#fi
-
 REPOS=`run gh repo list ${GH_OWNER} --json name,nameWithOwner,sshUrl --limit ${GH_LIST_LIMIT}`
 
 for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
