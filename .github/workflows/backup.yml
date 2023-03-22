@@ -28,7 +28,7 @@ jobs:
       - name: List backups
         run: ls -lah ${GITHUB_WORKSPACE}/backups/
 
-      - uses: actions/cache@v3
+      - uses: actions/cache/save@v3
         with:
           path: ${GITHUB_WORKSPACE}/backups/*
           key: backups
@@ -43,10 +43,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - uses: actions/cache@v3
+      - uses: actions/cache/restore@v3
         with:
           path: ${GITHUB_WORKSPACE}/backups/*
           key: backups
+          fail-on-cache-miss: true
 
       - name: List backups
         run: ls -lah ${GITHUB_WORKSPACE}/backups/
