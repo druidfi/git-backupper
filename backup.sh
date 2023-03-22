@@ -25,7 +25,7 @@ for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
 
     if [ "${GIT_CLONE_MODE}" == "https" ] ; then
       REPO=https://github.com/$(_jq '.nameWithOwner').git
-      REPO=https://github.com/$(_jq '.nameWithOwner').wiki.git
+      WIKI_REPO=https://github.com/$(_jq '.nameWithOwner').wiki.git
     else
       REPO=git@github.com:$(_jq '.nameWithOwner').git
       WIKI_REPO=git@github.com:$(_jq '.nameWithOwner').wiki.git
