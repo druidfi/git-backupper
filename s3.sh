@@ -23,7 +23,7 @@ fi
 SYNC="aws s3 sync backups ${S3_PATH} --region ${S3_REGION}"
 
 # Sync backups to S3
-if aws s3 sync backups ${S3_PATH} --region ${S3_REGION};
+if aws s3 sync backups ${S3_PATH} --region ${S3_REGION} --no-progress;
 then
 
   rm -f backups/*
