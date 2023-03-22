@@ -6,7 +6,7 @@ source utils.sh
 
 GH_OWNER=${GH_OWNER-"octocat"}
 GH_LIST_LIMIT=${GH_LIST_LIMIT-100}
-GIT_CLONE_MODE=${GIT_CLONE_MODE-"ssh"}
+GIT_CLONE_MODE=${GIT_CLONE_MODE-"https"}
 GIT_CLONE_FLAGS="--quiet --mirror"
 
 # The function `compress` will create a gzipped tar archive of the specified file ($1) and then remove the original
@@ -25,17 +25,18 @@ for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
 
     if [ "${GIT_CLONE_MODE}" == "https" ] ; then
       REPO=https://github.com/$(_jq '.nameWithOwner').git
+      REPO=https://github.com/$(_jq '.nameWithOwner').wiki.git
     else
       REPO=git@github.com:$(_jq '.nameWithOwner').git
+      WIKI_REPO=git@github.com:$(_jq '.nameWithOwner').wiki.git
     fi
 
-    WIKI_REPO=git@github.com:$(_jq '.nameWithOwner').wiki.git
     BACKUP_DIR=backups/$(_jq '.name')
     ISSUE_JSON=backups/$(_jq '.name')/issues.json
 
     mkdir -p ${BACKUP_DIR}
 
-    info "- Cloning repository (${GIT_CLONE_MODE})..."
+    info "- Cloning repository..."
     run gh repo clone ${REPO} ${BACKUP_DIR}/repository -- ${GIT_CLONE_FLAGS}
 
     info "- Download issues as JSON..."
