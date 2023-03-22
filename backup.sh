@@ -4,7 +4,6 @@ set -eu
 
 source utils.sh
 
-GH_CLI_TOKEN=${GH_CLI_TOKEN-""}
 GH_OWNER=${GH_OWNER-"octocat"}
 GH_LIST_LIMIT=${GH_LIST_LIMIT-100}
 GIT_CLONE_MODE=${GIT_CLONE_MODE-"ssh"}

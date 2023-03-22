@@ -32,7 +32,7 @@ For `backup.sh`:
 
 | Name           | Value   | Description                     |
 |----------------|---------|---------------------------------|
-| GH_CLI_TOKEN   |         | Specific token to use           |
+| GH_TOKEN       |         | Specific token to use           |
 | GH_OWNER       | octocat | GitHub organization             |
 | GH_LIST_LIMIT  | 100     | How many repositories to backup |
 | GIT_CLONE_MODE | ssh     | Clone using ssh or https        |
@@ -45,6 +45,20 @@ For `s3.sh`:
 | AWS_ACCESS_KEY_ID     |              | awscli credential            |
 | AWS_SECRET_ACCESS_KEY |              | awscli credential            |
 | S3_REGION             | eu-central-1 | Default region               |
+
+## Docker image
+
+Build image as `git-backupper:latest`:
+
+```shell
+docker build . --progress plain -t git-backupper
+```
+
+Run image:
+
+```shell
+docker run -ti --rm -e GH_TOKEN=YOUR_PAT -e GH_OWNER=myorg -e GH_LIST_LIMIT=5 -v `pwd`/backups:/app/backups git-backupper
+```
 
 ## TODO
 
