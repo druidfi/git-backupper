@@ -3,7 +3,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/build-docker-image.yml'
+      - '.github/workflows/build-docker-image.yaml'
       - '.dockerignore'
       - 'Dockerfile'
       - '**.sh'
