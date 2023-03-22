@@ -1,6 +1,7 @@
 name: Backup
 
 on:
+  push:
   schedule:
     - cron:  '0 0 * * *' # UTC == 2 AM EET
 
@@ -22,7 +23,30 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_CLI_TOKEN }}
           GIT_CLONE_MODE: https
           GH_OWNER: druidfi
-          GH_LIST_LIMIT: 100
+          GH_LIST_LIMIT: 3
+
+      - name: List backups
+        run: ls -lah ${GITHUB_WORKSPACE}/backups/
+
+      - uses: actions/cache@v3
+        with:
+          path: ${GITHUB_WORKSPACE}/backups/*
+          key: backups
+
+  sync:
+
+    runs-on: ubuntu-latest
+    needs: [ backup ]
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: ${GITHUB_WORKSPACE}/backups/*
+          key: backups
 
       - name: List backups
         run: ls -lah ${GITHUB_WORKSPACE}/backups/
