@@ -7,8 +7,8 @@ GH_OWNER=${GH_OWNER-"octocat"}
 GH_LIST_LIMIT=${GH_LIST_LIMIT-100}
 GIT_CLONE_FLAGS="--quiet --mirror"
 
-echo "Check gh status with GITHUB_TOKEN"
-gh auth status
+#echo "Check gh status with GITHUB_TOKEN"
+#gh auth status
 
 # The function `run` will exit the script if the given command fails.
 function run {
