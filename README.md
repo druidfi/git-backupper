@@ -27,8 +27,15 @@ See [Github workflow](.github/workflows/backup.yml) to see how to use with Githu
 
 ## Environment variables
 
-| Name          | Value   | Description                     |
-|---------------|---------|---------------------------------|
-| GH_CLI_TOKEN  |         | Specific token to use           |
-| GH_OWNER      | octocat | GitHub organization             |
-| GH_LIST_LIMIT | 100     | How many repositories to backup |
+| Name           | Value   | Description                     |
+|----------------|---------|---------------------------------|
+| GH_CLI_TOKEN   |         | Specific token to use           |
+| GH_OWNER       | octocat | GitHub organization             |
+| GH_LIST_LIMIT  | 100     | How many repositories to backup |
+| GIT_CLONE_MODE | ssh     | Clone using ssh or https        |
+
+## TODO
+
+- S3 sync script
+- S3 workflow running that script
+- Possibility to backup custom repositories
