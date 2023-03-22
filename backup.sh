@@ -31,7 +31,7 @@ function compress {
 if [[ -n $GH_CLI_TOKEN ]]
 then
   echo "Authenticate with GH_CLI_TOKEN"
-  echo "$GH_CLI_TOKEN" | run gh auth login --git-protocol ssh --with-token
+  echo "$GH_CLI_TOKEN" | run gh auth login --with-token
   echo "Check gh status with GH_CLI_TOKEN"
   gh auth status
 fi
@@ -45,7 +45,8 @@ for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
 
     echo "Backup repository $(_jq '.nameWithOwner')"
 
-    REPO=git@github.com:$(_jq '.nameWithOwner').git
+    #REPO=git@github.com:$(_jq '.nameWithOwner').git
+    REPO=https://github.com/$(_jq '.nameWithOwner').git
     WIKI_REPO=git@github.com:$(_jq '.nameWithOwner').wiki.git
     BACKUP_DIR=backups/$(_jq '.name')
     ISSUE_JSON=backups/$(_jq '.name')/issues.json
