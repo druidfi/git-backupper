@@ -20,8 +20,10 @@ Syncs backups to S3 bucket
 This script can be used with e.g. CI workflow, Docker container or as it is:
 
 ```shell
-GH_OWNER=myorg ./backup.sh
+GH_OWNER=myorg GH_LIST_LIMIT=5 ./backup.sh
 ```
+
+See [Github workflow](.github/workflows/backup.yml) to see how to use with Github Actions workflow.
 
 ## Environment variables
 

@@ -17,10 +17,11 @@ jobs:
       - name: Backup repositories from GitHub
         run: ${GITHUB_WORKSPACE}/backup.sh
         env:
+          # PAT needs these scopes: read:org, repo
           GITHUB_TOKEN: ${{ secrets.GH_CLI_TOKEN }}
           GIT_CLONE_MODE: https
           GH_OWNER: druidfi
           GH_LIST_LIMIT: 100
 
       - name: List backups
-        run: ls -lah ${GITHUB_WORKSPACE}/
+        run: ls -lah ${GITHUB_WORKSPACE}/backups/
