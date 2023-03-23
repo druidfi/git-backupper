@@ -8,6 +8,7 @@ SCOPE_EXT="*.tar.gz"
 DATA_PATH="backups/${SCOPE_EXT}"
 S3_PATH="s3://${S3_BUCKET}/"
 S3_REGION=${S3_REGION:-"eu-central-1"}
+AWSCLI_FLAGS=${AWSCLI_FLAGS:-"--only-show-errors --no-progress"}
 
 # Delete possible empty files before sync
 find backups -type f -empty -delete
@@ -23,7 +24,7 @@ fi
 SYNC="aws s3 sync backups ${S3_PATH} --region ${S3_REGION}"
 
 # Sync backups to S3
-if aws s3 sync backups ${S3_PATH} --region ${S3_REGION} --no-progress;
+if aws s3 sync backups ${S3_PATH} --region ${S3_REGION} ${AWSCLI_FLAGS};
 then
 
   rm -f backups/*

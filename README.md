@@ -43,12 +43,13 @@ For `backup.sh`:
 
 For `s3.sh`:
 
-| Name                  | Value        | Description                  |
-|-----------------------|--------------|------------------------------|
-| S3_BUCKET             |              | Target S3 bucket for backups |
-| AWS_ACCESS_KEY_ID     |              | awscli credential            |
-| AWS_SECRET_ACCESS_KEY |              | awscli credential            |
-| S3_REGION             | eu-central-1 | Default region               |
+| Name                  | Value                            | Description                  |
+|-----------------------|----------------------------------|------------------------------|
+| S3_BUCKET             |                                  | Target S3 bucket for backups |
+| AWS_ACCESS_KEY_ID     |                                  | awscli credential            |
+| AWS_SECRET_ACCESS_KEY |                                  | awscli credential            |
+| AWSCLI_FLAGS          | --only-show-errors --no-progress | Flags for awscli             |
+| S3_REGION             | eu-central-1                     | Default region               |
 
 ## Docker image
 
