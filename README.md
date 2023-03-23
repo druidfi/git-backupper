@@ -67,4 +67,5 @@ docker build . --progress plain -t git-backupper
 
 ## TODO
 
+- Add S3 script running to Docker image
 - Possibility to backup custom repositories
