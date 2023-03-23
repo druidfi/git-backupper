@@ -21,12 +21,11 @@ jobs:
         env:
           # PAT needs these scopes: read:org, repo
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          GIT_CLONE_MODE: https
           GH_OWNER: druidfi
           #GH_LIST_LIMIT: 3
 
-      - name: List backups
-        run: ls -lah ${GITHUB_WORKSPACE}/backups/
+      #- name: Debug - List backups
+      #  run: ls -lah ${GITHUB_WORKSPACE}/backups/
 
       - uses: actions/cache@v3
         with:
@@ -49,8 +48,8 @@ jobs:
           path: backups
           key: backups-${{ github.run_id }}
 
-      - name: List backups
-        run: ls -lah ${GITHUB_WORKSPACE}/backups/
+      #- name: Debug - List backups
+      #  run: ls -lah ${GITHUB_WORKSPACE}/backups/
 
       - name: Sync backups to S3
         run: ${GITHUB_WORKSPACE}/s3.sh
