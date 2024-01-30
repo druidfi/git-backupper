@@ -20,12 +20,18 @@ Note: all these are pre-installed on Github Action runners and in Docker image (
 
 These scripts can be used with e.g. CI workflow, Docker container or as it is:
 
-```shell
+```console
 GH_OWNER=myorg GH_LIST_LIMIT=5 ./backup.sh
 ```
 
-```shell
+```console
 S3_BUCKET=mybucket AWS_ACCESS_KEY_ID=mykey AWS_SECRET_ACCESS_KEY=mysecret ./s3.sh
+```
+
+To some S3-compliant service e.g. UpCloud:
+
+```console
+S3_BUCKET=mybucket S3_REGION=europe-1 ENDPOINT_URL=https://foobar.upcloudobjects.com AWS_ACCESS_KEY_ID=mykey AWS_SECRET_ACCESS_KEY=mysecret ./s3.sh
 ```
 
 See [Github workflow](.github/workflows/backup.yml) to see how to use with Github Actions workflow.
@@ -55,14 +61,14 @@ For `s3.sh`:
 
 Use prebuild image:
 
-```shell
+```console
 docker run -ti --rm -e GH_TOKEN=YOUR_PAT -e GH_OWNER=myorg -e GH_LIST_LIMIT=5 \
   -v `pwd`/backups:/app/backups ghcr.io/druidfi/git-backupper
 ```
 
 Build image as `git-backupper:latest`:
 
-```shell
+```console
 docker build . --progress plain -t git-backupper
 ```
 

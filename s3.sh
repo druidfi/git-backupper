@@ -10,6 +10,10 @@ S3_PATH="s3://${S3_BUCKET}/"
 S3_REGION=${S3_REGION:-"eu-central-1"}
 AWSCLI_FLAGS=${AWSCLI_FLAGS:-"--only-show-errors --no-progress"}
 
+if [ -n "${ENDPOINT_URL}" ]; then
+  AWSCLI_FLAGS="${AWSCLI_FLAGS} --endpoint-url ${ENDPOINT_URL}"
+fi
+
 # Delete possible empty files before sync
 find backups -type f -empty -delete
 
