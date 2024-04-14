@@ -74,3 +74,4 @@ jobs:
         env:
           GH_OWNER: ${{ github.repository_owner }}
           GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
