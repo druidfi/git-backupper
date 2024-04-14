@@ -7,17 +7,7 @@ source utils.sh
 GH_OWNER=${GH_OWNER-"octocat"}
 GH_REPO=${GH_REPO-"git-backupper"}
 
-gh extension install actions/gh-actions-cache
-
-cacheKeys=$(gh actions-cache list -R $GH_OWNER/$GH_REPO | cut -f 1)
-
-## Setting this to not fail the workflow while deleting cache keys.
-set +e
-
-for cacheKey in $cacheKeys
-do
-    gh actions-cache delete $cacheKey -R $GH_OWNER/$GH_REPO --confirm
-done
+gh cache delete --all
 
 # gh api repos/druidfi/git-backupper/actions/workflows | jq '.workflows[] | .id'
 workflow_ids=($(gh api repos/$GH_OWNER/$GH_REPO/actions/workflows | jq '.workflows[] | .id'))
@@ -30,6 +20,7 @@ do
   for run_id in "${run_ids[@]}"
   do
     info "- Deleting Run ID $run_id"
-    gh api repos/$GH_OWNER/$GH_REPO/actions/runs/$run_id -X DELETE >/dev/null
+    #gh api repos/$GH_OWNER/$GH_REPO/actions/runs/$run_id -X DELETE >/dev/null
+    gh run delete $run_id
   done
 done
