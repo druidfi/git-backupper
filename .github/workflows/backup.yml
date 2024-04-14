@@ -66,6 +66,9 @@ jobs:
 
     steps:
 
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Delete workflow runs and cache
         run: ${GITHUB_WORKSPACE}/cleanup.sh
         env:
