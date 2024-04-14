@@ -72,6 +72,5 @@ jobs:
       - name: Delete workflow runs and cache
         run: ${GITHUB_WORKSPACE}/cleanup.sh
         env:
-          GH_OWNER: ${{ github.repository_owner }}
           GH_REPO: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
