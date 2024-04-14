@@ -21,7 +21,7 @@ jobs:
         env:
           # PAT needs these scopes: read:org, repo
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          GH_OWNER: druidfi
+          GH_OWNER: ${{ github.repository_owner }}
           #GH_LIST_LIMIT: 3
 
       #- name: Debug - List backups
@@ -59,23 +59,16 @@ jobs:
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           ENDPOINT_URL: ${{ secrets.ENDPOINT_URL }}
 
-      - name: Cleanup
-        run: |
-          gh extension install actions/gh-actions-cache
-          cacheKeys=$(gh actions-cache list -R druidfi/git-backupper | cut -f 1)
-          ## Setting this to not fail the workflow while deleting cache keys.
-          set +e
-          for cacheKey in $cacheKeys
-          do
-              gh actions-cache delete $cacheKey -R druidfi/git-backupper --confirm
-          done
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  cleanup:
 
-      - name: Delete workflow runs
-        uses: Mattraks/delete-workflow-runs@v2
-        with:
-          token: ${{ github.token }}
-          repository: ${{ github.repository }}
-          retain_days: 1
-          keep_minimum_runs: 1
+    runs-on: ubuntu-latest
+    needs: [ sync ]
+
+    steps:
+
+      - name: Delete workflow runs and cache
+        run: ${GITHUB_WORKSPACE}/cleanup.sh
+        env:
+          GH_OWNER: ${{ github.repository_owner }}
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

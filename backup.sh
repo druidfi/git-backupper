@@ -8,6 +8,10 @@ GH_OWNER=${GH_OWNER-"octocat"}
 GH_LIST_LIMIT=${GH_LIST_LIMIT-100}
 GIT_CLONE_MODE=${GIT_CLONE_MODE-"https"}
 GIT_CLONE_FLAGS="--quiet --mirror"
+REVEAL=${1-"no"}
+if [ "${REVEAL}" == "--reveal" ] ; then REVEAL=1 ; else REVEAL=0 ; fi
+
+if [ $REVEAL -eq 1 ] ; then echo "REVEAL" ; fi
 
 # The function `compress` will create a gzipped tar archive of the specified file ($1) and then remove the original
 function compress {
@@ -21,7 +25,8 @@ for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
       echo ${row} | base64 --decode | jq -r ${1}
     }
 
-    info "Backup repository $(_jq '.nameWithOwner')"
+    #info "Backup repository $(_jq '.nameWithOwner')"
+    info "Backup repository *******"
 
     if [ "${GIT_CLONE_MODE}" == "https" ] ; then
       REPO=https://github.com/$(_jq '.nameWithOwner').git
