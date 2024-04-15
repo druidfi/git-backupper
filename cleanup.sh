@@ -19,7 +19,7 @@ do
   for run_id in "${run_ids[@]}"
   do
     info "- Deleting Run ID $run_id"
-    #gh api repos/$GH_OWNER/$GH_REPO/actions/runs/$run_id -X DELETE >/dev/null
-    run gh run delete $run_id
+    gh api repos/$GH_OWNER/$GH_REPO/actions/runs/$run_id -X DELETE >/dev/null
+    #run gh run delete $run_id
   done
 done
