@@ -4,5 +4,8 @@
     "config:recommended",
     "github>druidfi/renovate-config:global"
   ],
+  "baseBranches": [
+    "main"
+  ],
   "enabled": true
 }
