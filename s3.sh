@@ -14,6 +14,11 @@ if [ -n "${ENDPOINT_URL}" ]; then
   AWSCLI_FLAGS="${AWSCLI_FLAGS} --endpoint-url ${ENDPOINT_URL}"
 fi
 
+# S3-compatible endpoints (non-AWS) reject the extra request checksum
+# newer aws-cli versions send by default, causing XAmzContentSHA256Mismatch.
+export AWS_REQUEST_CHECKSUM_CALCULATION="${AWS_REQUEST_CHECKSUM_CALCULATION:-when_required}"
+export AWS_RESPONSE_CHECKSUM_VALIDATION="${AWS_RESPONSE_CHECKSUM_VALIDATION:-when_required}"
+
 # Delete possible empty files before sync
 find backups -type f -empty -delete
 
