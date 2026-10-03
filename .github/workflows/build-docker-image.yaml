@@ -10,11 +10,18 @@ on:
 
 name: Build Docker image
 
+permissions:
+  contents: read
+
 jobs:
 
   build:
 
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
 
     steps:
 

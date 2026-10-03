@@ -5,6 +5,9 @@ on:
     - cron:  '0 0 * * *' # UTC == 2 AM EET
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
 
   backup:
@@ -63,6 +66,10 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: [ sync ]
+
+    permissions:
+      contents: read
+      actions: write
 
     steps:
 
