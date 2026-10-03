@@ -30,8 +30,6 @@ then
 
 fi
 
-SYNC="aws s3 sync backups ${S3_PATH} --region ${S3_REGION}"
-
 # Sync backups to S3
 if aws s3 sync backups ${S3_PATH} --region ${S3_REGION} ${AWSCLI_FLAGS};
 then
@@ -42,5 +40,6 @@ then
 else
 
   error "ERROR syncing backups to S3"
+  exit 1
 
 fi
