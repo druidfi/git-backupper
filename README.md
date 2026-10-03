@@ -82,12 +82,17 @@ For `s3.sh`:
 
 ## Docker image
 
-Use prebuild image:
+Use prebuild image (tags: `latest` and `sha-<commit>`):
 
 ```console
 docker run -ti --rm -e GH_TOKEN=YOUR_PAT -e GH_OWNER=myorg -e GH_LIST_LIMIT=5 \
   -v `pwd`/backups:/app/backups ghcr.io/druidfi/git-backupper
 ```
+
+The container runs as non-root user `backupper` (uid 1000). On Linux, if your user is not uid 1000, add
+`--user "$(id -u):$(id -g)"` so that the mounted `backups` directory is writable.
+
+GitHub SSH host keys are pinned in [ssh_known_hosts](ssh_known_hosts) (from `https://api.github.com/meta`).
 
 Build image as `git-backupper:latest`:
 
