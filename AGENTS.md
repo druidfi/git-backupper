@@ -28,13 +28,13 @@ For a quick manual check, use a small `GH_LIST_LIMIT`. `shellcheck *.sh` is the 
 
 ### CI flow (`.github/workflows/backup.yml`)
 
-Nightly at 00:00 UTC, three chained jobs: `backup` → `sync` → `cleanup`. The `backups/` directory is handed from `backup` to `sync` through `actions/cache` keyed by `github.run_id` (not artifacts), and `cleanup` then wipes caches and old runs so backup data doesn't linger in GitHub. `build-docker-image.yaml` pushes multi-arch `ghcr.io/druidfi/git-backupper:latest` on changes to `main`.
+Nightly at 00:00 UTC, two jobs: `backup` (runs `backup.sh` then `s3.sh`, plus a Slack notice on failure) → `cleanup` (runs even if `backup` failed; deletes caches and old runs). Backup and sync deliberately share one job: this repo is public, so backup data must never be handed between jobs via `actions/cache` or artifacts. The `backup` job only runs when the repo variable `BACKUP_ENABLED` is `true`, so repos created from this template stay inactive until configured. Optional vars: `GH_OWNER`, `GH_LIST_LIMIT` (defaults to 1000 in CI), `SKIP_FORKS`, `SKIP_ARCHIVED` (`true` to skip), `S3_REGION`; secrets: `GH_TOKEN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET`, `ENDPOINT_URL`, `SLACK_HOOK`. `build-docker-image.yaml` pushes multi-arch `ghcr.io/druidfi/git-backupper:latest` on changes to `main`.
 
 GitHub Actions are pinned to commit SHAs with a version comment; Renovate keeps them updated. Keep that format when adding or changing actions.
 
 ## Gotchas
 
 - Repository names are deliberately masked in logs (`info "Backup repository *******"`) because workflow logs may be visible; don't reintroduce names in output. The `--reveal` flag is parsed but not wired to anything yet.
-- `slack()` calls `exit 0` when `DEBUG=1` or `SLACK_HOOK` is unset. Since `success`/`error` call it, they terminate the whole script with status 0 in those cases — including on S3 sync failure.
+- `slack()` returns without posting when `DEBUG=1` or `SLACK_HOOK` is unset. `error` does not exit by itself; callers must `exit 1` after it (as `s3.sh` does).
 - `s3.sh` runs under `set -u` and references `ENDPOINT_URL` directly, so it must be set (empty is fine) when running against AWS.
-- `GIT_CLONE_MODE` defaults to `https` in `backup.sh` (the README table says `ssh`); the Docker image also sets `https`.
+- `GIT_CLONE_MODE` defaults to `https` in `backup.sh`; the Docker image also sets `https`.

@@ -7,6 +7,8 @@ source utils.sh
 GH_OWNER=${GH_OWNER-"octocat"}
 GH_LIST_LIMIT=${GH_LIST_LIMIT-100}
 GIT_CLONE_MODE=${GIT_CLONE_MODE-"https"}
+SKIP_FORKS=${SKIP_FORKS:-false}
+SKIP_ARCHIVED=${SKIP_ARCHIVED:-false}
 GIT_CLONE_FLAGS="--quiet --mirror"
 REVEAL=${1-"no"}
 if [ "${REVEAL}" == "--reveal" ] ; then REVEAL=1 ; else REVEAL=0 ; fi
@@ -18,7 +20,11 @@ function compress {
    run tar zcf $1.tar.gz $2 && run rm -rf $2
 }
 
-REPOS=`run gh repo list ${GH_OWNER} --json name,nameWithOwner,sshUrl --limit ${GH_LIST_LIMIT}`
+GH_LIST_FLAGS=""
+if [ "${SKIP_FORKS}" == "true" ] ; then GH_LIST_FLAGS="${GH_LIST_FLAGS} --source" ; fi
+if [ "${SKIP_ARCHIVED}" == "true" ] ; then GH_LIST_FLAGS="${GH_LIST_FLAGS} --no-archived" ; fi
+
+REPOS=`run gh repo list ${GH_OWNER} --json name,nameWithOwner,sshUrl --limit ${GH_LIST_LIMIT} ${GH_LIST_FLAGS}`
 
 for row in $(echo "${REPOS}" | jq -r '.[] | @base64'); do
     _jq() {

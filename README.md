@@ -36,6 +36,24 @@ S3_BUCKET=mybucket S3_REGION=europe-1 ENDPOINT_URL=https://foobar.upcloudobjects
 
 See [Github workflow](.github/workflows/backup.yml) to see how to use with Github Actions workflow.
 
+### GitHub Actions setup
+
+The workflow does nothing until the repository variable `BACKUP_ENABLED` is set to `true`.
+
+| Kind     | Name                                                           | Notes                                      |
+|----------|----------------------------------------------------------------|--------------------------------------------|
+| Variable | `BACKUP_ENABLED`                                               | `true` to enable the nightly backup        |
+| Variable | `GH_OWNER`                                                     | Defaults to the repository owner           |
+| Variable | `GH_LIST_LIMIT`                                                | Defaults to 1000                           |
+| Variable | `SKIP_FORKS`, `SKIP_ARCHIVED`                                  | `true` to skip forks / archived repos      |
+| Variable | `S3_REGION`                                                    | Defaults to `eu-central-1`                 |
+| Secret   | `GH_TOKEN`                                                     | Token with `read:org` and `repo` scopes    |
+| Secret   | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET`      | S3 credentials and bucket                  |
+| Secret   | `ENDPOINT_URL`                                                 | Optional, for S3-compatible services       |
+| Secret   | `SLACK_HOOK`                                                   | Optional, Slack webhook for notifications  |
+
+Backup and S3 sync run in the same job, so backup data never goes to GitHub caches or artifacts.
+
 ## Environment variables
 
 For `backup.sh`:
@@ -45,7 +63,9 @@ For `backup.sh`:
 | GH_TOKEN       |         | Specific token to use           |
 | GH_OWNER       | octocat | GitHub organization             |
 | GH_LIST_LIMIT  | 100     | How many repositories to backup |
-| GIT_CLONE_MODE | ssh     | Clone using ssh or https        |
+| GIT_CLONE_MODE | https   | Clone using ssh or https        |
+| SKIP_FORKS     | false   | Set to true to skip forks       |
+| SKIP_ARCHIVED  | false   | Set to true to skip archived    |
 
 For `s3.sh`:
 

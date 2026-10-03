@@ -50,13 +50,13 @@ slack () {
   then
 
     debug "Not flooding Slack in debug mode: $1"
-    exit 0
+    return 0
 
   elif [ -z "${SLACK_HOOK}" ]
   then
 
     info "No Slack webhook supplied. You need to give Slack webhook as an ENV variable SLACK_HOOK."
-    exit 0
+    return 0
 
   fi
 

@@ -6,7 +6,7 @@ source utils.sh
 
 GH_REPO=${GH_REPO-"octocat/git-backupper"}
 
-run gh cache delete --all
+run gh cache delete --all --succeed-on-no-caches
 
 # gh api repos/druidfi/git-backupper/actions/workflows | jq '.workflows[] | .id'
 workflow_ids=($(run gh api repos/$GH_REPO/actions/workflows | jq '.workflows[] | .id'))
