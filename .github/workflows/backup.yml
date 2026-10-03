@@ -36,6 +36,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           GH_OWNER: ${{ vars.GH_OWNER || github.repository_owner }}
           GH_LIST_LIMIT: ${{ vars.GH_LIST_LIMIT || 1000 }}
+          SKIP_FORKS: ${{ vars.SKIP_FORKS || false }}
+          SKIP_ARCHIVED: ${{ vars.SKIP_ARCHIVED || false }}
           SLACK_HOOK: ${{ secrets.SLACK_HOOK }}
 
       - name: Sync backups to S3
