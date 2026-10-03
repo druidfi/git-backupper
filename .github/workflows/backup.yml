@@ -38,9 +38,13 @@ jobs:
           GH_LIST_LIMIT: ${{ vars.GH_LIST_LIMIT || 1000 }}
           SKIP_FORKS: ${{ vars.SKIP_FORKS || false }}
           SKIP_ARCHIVED: ${{ vars.SKIP_ARCHIVED || false }}
+          SKIP_ISSUES: ${{ vars.SKIP_ISSUES || false }}
+          SKIP_ISSUE_COMMENTS: ${{ vars.SKIP_ISSUE_COMMENTS || false }}
           SLACK_HOOK: ${{ secrets.SLACK_HOOK }}
 
       - name: Sync backups to S3
+        # Also sync the successful archives when some repositories failed
+        if: ${{ !cancelled() }}
         run: ${GITHUB_WORKSPACE}/s3.sh
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

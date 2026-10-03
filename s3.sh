@@ -1,16 +1,15 @@
 #!/bin/bash
 
-set -eu
+set -euo pipefail
 
 source utils.sh
 
 SCOPE_EXT="*.tar.gz"
-DATA_PATH="backups/${SCOPE_EXT}"
 S3_PATH="s3://${S3_BUCKET}/"
 S3_REGION=${S3_REGION:-"eu-central-1"}
 AWSCLI_FLAGS=${AWSCLI_FLAGS:-"--only-show-errors --no-progress"}
 
-if [ -n "${ENDPOINT_URL}" ]; then
+if [ -n "${ENDPOINT_URL:-}" ]; then
   AWSCLI_FLAGS="${AWSCLI_FLAGS} --endpoint-url ${ENDPOINT_URL}"
 fi
 
@@ -20,6 +19,7 @@ export AWS_REQUEST_CHECKSUM_CALCULATION="${AWS_REQUEST_CHECKSUM_CALCULATION:-whe
 export AWS_RESPONSE_CHECKSUM_VALIDATION="${AWS_RESPONSE_CHECKSUM_VALIDATION:-when_required}"
 
 # Delete possible empty files before sync
+mkdir -p backups
 find backups -type f -empty -delete
 
 if ! test -n "$(find ./backups -maxdepth 1 -name "${SCOPE_EXT}" -print -quit)"
@@ -31,7 +31,9 @@ then
 fi
 
 # Sync backups to S3
-if aws s3 sync backups ${S3_PATH} --region ${S3_REGION} ${AWSCLI_FLAGS};
+# AWSCLI_FLAGS is intentionally unquoted to split it into separate flags
+# shellcheck disable=SC2086
+if aws s3 sync backups "${S3_PATH}" --region "${S3_REGION}" ${AWSCLI_FLAGS};
 then
 
   rm -f backups/*
