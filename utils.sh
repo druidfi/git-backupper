@@ -3,15 +3,32 @@
 DEBUG=${DEBUG:-0}
 
 # The function `run` will exit the script if the given command fails.
+# The command itself is not printed, as it may contain repository names.
 run () {
-  "$@"
-  status=$?
+  local status=0
+  "$@" || status=$?
   if [ $status -ne 0 ]; then
-    echo "ERROR: Encountered error (${status}) while running the following:" >&2
-    echo "           $@"  >&2
-    echo "       (at line ${BASH_LINENO[0]} of file $0.)"  >&2
-    echo "       Aborting." >&2
+    echo "ERROR: Encountered error (${status}) at line ${BASH_LINENO[0]} of file $0. Aborting." >&2
     exit $status
+  fi
+}
+
+# The function `quiet` runs a command and shows its stderr only if it fails.
+quiet () {
+  local status=0 log
+  log=$(mktemp)
+  "$@" 2> "$log" || status=$?
+  if [ $status -ne 0 ]; then
+    sed 's/^/    /' "$log" >&2
+  fi
+  rm -f "$log"
+  return $status
+}
+
+# The function `mask` hides the given value from GitHub Actions logs.
+mask () {
+  if [ "${GITHUB_ACTIONS:-}" == "true" ] && [ -n "$1" ]; then
+    echo "::add-mask::$1"
   fi
 }
 
@@ -60,10 +77,7 @@ slack () {
 
   fi
 
-  TEXT=$1
-  EMOJI=$2
-  MSG="$EMOJI $TEXT"
-  DATA="$(printf '{"text": "%s"}' "${MSG}" )"
-
-  curl -s -o /dev/null -X POST -H 'Content-type: application/json' --data "$DATA" "$SLACK_HOOK"
+  jq -n --arg text "$2 $1" '{text: $text}' \
+    | curl -s -o /dev/null -X POST -H 'Content-type: application/json' --data @- "$SLACK_HOOK" \
+    || warning "Could not send Slack notification"
 }

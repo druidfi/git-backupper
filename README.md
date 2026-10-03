@@ -4,7 +4,7 @@ Backup organization's GitHub repositories with Github CLI.
 
 - Clones repository with --mirror mode
 - Clones repository wiki if exists
-- Gets repository issues as JSON
+- Gets repository issues (open and closed) and issue comments as JSON (optional)
 - Creates tar.gz archive file
 - Sync backup archives to S3 bucket
 
@@ -46,6 +46,7 @@ The workflow does nothing until the repository variable `BACKUP_ENABLED` is set 
 | Variable | `GH_OWNER`                                                     | Defaults to the repository owner           |
 | Variable | `GH_LIST_LIMIT`                                                | Defaults to 1000                           |
 | Variable | `SKIP_FORKS`, `SKIP_ARCHIVED`                                  | `true` to skip forks / archived repos      |
+| Variable | `SKIP_ISSUES`, `SKIP_ISSUE_COMMENTS`                           | `true` to skip issues / issue comments     |
 | Variable | `S3_REGION`                                                    | Defaults to `eu-central-1`                 |
 | Secret   | `GH_TOKEN`                                                     | Token with `read:org` and `repo` scopes    |
 | Secret   | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET`      | S3 credentials and bucket                  |
@@ -58,14 +59,16 @@ Backup and S3 sync run in the same job, so backup data never goes to GitHub cach
 
 For `backup.sh`:
 
-| Name           | Value   | Description                     |
-|----------------|---------|---------------------------------|
-| GH_TOKEN       |         | Specific token to use           |
-| GH_OWNER       | octocat | GitHub organization             |
-| GH_LIST_LIMIT  | 100     | How many repositories to backup |
-| GIT_CLONE_MODE | https   | Clone using ssh or https        |
-| SKIP_FORKS     | false   | Set to true to skip forks       |
-| SKIP_ARCHIVED  | false   | Set to true to skip archived    |
+| Name                | Value   | Description                        |
+|---------------------|---------|------------------------------------|
+| GH_TOKEN            |         | Specific token to use              |
+| GH_OWNER            | octocat | GitHub organization                |
+| GH_LIST_LIMIT       | 1000    | How many repositories to backup    |
+| GIT_CLONE_MODE      | https   | Clone using ssh or https           |
+| SKIP_FORKS          | false   | Set to true to skip forks          |
+| SKIP_ARCHIVED       | false   | Set to true to skip archived       |
+| SKIP_ISSUES         | false   | Set to true to skip issues         |
+| SKIP_ISSUE_COMMENTS | false   | Set to true to skip issue comments |
 
 For `s3.sh`:
 
